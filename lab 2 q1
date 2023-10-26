@@ -1,0 +1,149 @@
+#include<stdio.h> 
+#include <stdbool.h> 
+#define SIZE 24
+#define nRows 8
+#define nCols 3
+// PROTOTYPES
+void set_array(int arr[], int length );
+void rem_align(int arr[], int length, int pos);
+void insert_align(int arr[],int length,int pos,int value);
+void reshape(int arr[], int length, int arr2d[nRows][nCols]);
+void print_trans_matrix(int arr2d[nRows][nCols]);
+bool found_duplicate (int arr[], int length);
+void flip_array(int arr[], int length, int start, int end);
+
+
+
+int main()
+{
+int arr[SIZE];
+int arr2d[nCols][nRows];
+
+printf("Part 1\n");
+set_array(arr, SIZE);
+for (int i = 0; i < SIZE; i++) {
+    printf("arr[%d] = %d\n", i, arr[i]);
+}
+printf(" \n ");
+
+printf("Part 2\n");
+rem_align(arr, SIZE, 4);
+for (int i = 0; i < SIZE; i++) {
+    printf("arr[%d] = %d\n", i, arr[i]);
+}
+
+printf("\n");
+
+insert_align(arr, SIZE, 4, 33);
+for (int i = 0; i < SIZE; i++) {
+    printf("arr[%d] = %d\n", i, arr[i]);
+}
+
+printf("\n");
+
+printf("Part 3\n");
+reshape(arr, SIZE, arr2d);
+for (int i = 0; i < SIZE; i++) {
+    printf("arr[%d] = %d\n", i, arr[i]);
+}
+
+printf("\n");
+
+printf("Part 4\n");
+print_trans_matrix(arr2d);
+
+printf("\n");
+
+printf("Part 5\n");
+bool dupe = found_duplicate(arr,SIZE);
+printf("Duplicate present: %s\n", dupe ? "true" : "false");
+
+printf("\n");
+
+printf("Part 6\n");
+flip_array(arr, SIZE, 0, SIZE);
+printf("The flipped array is: ");
+for (int i = 0; i < SIZE; i++) {
+    printf("arr[%d] = %d\n", i, arr[i]);
+}
+
+
+//Call to different functions
+}
+
+//FUNCTION DEFINITIONS
+
+void set_array(int arr[], int length ) {
+    for (int i = 0; i < length; i++)
+            arr[i] = i;
+    
+}
+
+void rem_align(int arr[], int length, int pos){
+    if(pos >=length || pos < 0) {
+        printf("Invalid position\n");
+        return;
+    }
+    for(int i = pos; i<(length - 1); i++){
+        arr[i] = arr[i+1];
+    }
+    arr[length-1] = 0;
+}
+
+
+void insert_align(int arr[],int length,int pos,int value){
+    if(pos >=length || pos < 0) {
+        printf("Invalid position\n");
+        return;
+    }
+    for (int i=(length-1);i>pos;i--) {
+        arr[i] = arr[i-1];
+    }
+    arr[pos]=value;
+}
+
+void reshape(int arr[], int length, int arr2d[nRows][nCols]) {
+    if (length != nRows*nCols) {
+        printf("Invalid length for reshaping");
+        return;
+    }
+        
+    int num = 0;
+    for (int i = 0; i <nRows; i++) {
+        for (int j = 0; j <nCols; j++) {
+            arr2d[i][j] = arr[num++];
+        }
+    }
+   
+}
+
+void print_trans_matrix(int arr2d[nRows][nCols]) {
+    for (int i = 0; i < nCols; i++) {
+        for (int j = 0; j < nRows; j++) {
+            printf("%d ", arr2d[j][i]);
+        }
+        printf("\n"); // Start a new column
+    }
+}
+bool found_duplicate(int arr[], int length) {
+    for (int i = 0; i < length - 1; i++) {
+        for (int j = i + 1; j < length; j++) {
+            if (arr[i] == arr[j]) {
+                return true; 
+            }
+        }
+    }
+    return false;
+}
+
+void flip_array(int arr[], int length, int start, int end) {
+    
+    int temp;
+    if (start >= end){ 
+        return; 
+    }
+    temp = arr[start];    
+    arr[start] = arr[end-1]; 
+    arr[end] = temp; 
+    flip_array(arr, SIZE, start+1,end-1);
+}
