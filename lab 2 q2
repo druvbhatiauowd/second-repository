@@ -1,0 +1,221 @@
+#include <stdio.h>
+#include <string.h>
+#include <strings.h>
+#include <ctype.h>
+#include <strings.h>
+#include <stdbool.h>
+
+#ifdef _WIN32 // Check if the code is being compiled on a Windows system
+#include <string.h> // Include this header for _stricmp on Windows
+#define STRCASECMP _stricmp
+#else
+#include <strings.h> // Include this header for strcasecmp on POSIX systems
+#define STRCASECMP strcasecmp
+#endif
+
+#define numOfSubjects 5
+#define numOfStudents 15
+
+struct Student {
+    char studentfName[40];
+    char studentlName[40];
+    int studentID;
+    float subjectMarks[3];
+    int aggregateMarks;
+    char Grade[10];
+};
+
+struct Student students[50]; //A maximum of 50 students
+
+//Used to calculate the grades using the marks 
+char* calculateGrade(int marks) {
+    if (marks >= 85)
+        return "HD";
+    else if (marks >= 75)
+        return "D";
+    else if (marks >= 65)
+        return "C";
+    else if (marks >= 50)
+        return "P";
+    else
+        return "F";
+}
+void enrol() {
+    if (numOfStudents < 50 ) {
+        
+        struct Student newStud;
+        
+        printf("Please enter your first name: ");
+        scanf("%s",newStud.studentfName);
+        
+        printf("Please enter your last name: ");
+        scanf("%s", newStud.studentlName);
+        
+        printf("Please enter the student ID: ");
+        scanf("%d", &newStud.studentID);
+       
+        printf("Enter subject marks for %d subjects:\n", numOfSubjects);
+        
+        for (int i = 0; i < numOfSubjects; i++) {
+            printf("Subject %d: ", i);
+            scanf("%f", &newStud.subjectMarks[i]);
+        }
+        
+        newStud.aggregateMarks = 0;
+        for (int i = 0; i < numOfSubjects; i++) {
+            if (newStud.subjectMarks[i] >= 0) {
+                newStud.aggregateMarks += newStud.subjectMarks[i];
+            }
+            
+        // Calculate Grade
+        strcpy(newStud.Grade, calculateGrade(newStud.aggregateMarks));
+        }
+    }
+    else {
+        printf("\nThe list of students is currently full. ");
+    }
+}   
+
+// Search for a student and update their results
+void searchUpdate() {
+    int searchChoice;
+    printf("Search by:\n");
+    printf("1. Student ID\n");
+    printf("2. Last Name\n");
+    printf("Enter your choice: ");
+    scanf("%d", &searchChoice);
+
+    int searchID, found = 0;
+    char searchstudentlName[50];
+    int updateChoice;
+
+    if (searchChoice == 1){
+         // Search by Student ID
+        printf("Enter Student ID: ");
+        scanf("%d", &searchID);
+        
+        for (int i = 0; i < numOfStudents; i++) {
+            if (students[i].studentID == searchID) {
+                found = 1;
+                printf("Student found:\n");
+                printf("First Name: %s\n", students[i].studentfName);
+                printf("Last Name: %s\n", students[i].studentlName);
+                printf("Student ID: %d\n", students[i].studentID);
+                printf("Aggregate Marks: %d\n", students[i].aggregateMarks);
+                printf("Grade: %s\n", students[i].Grade);
+
+                printf("Do you want to update this student's attributes? (1/0): ");
+                scanf("%d", &updateChoice);
+
+                if (updateChoice) {
+                    printf("Enter updated First Name: ");
+                    scanf("%s", students[i].studentfName);
+
+                    printf("Enter updated Last Name: ");
+                    scanf("%s", students[i].studentlName);
+
+                    printf("Enter updated Student ID: ");
+                    scanf("%d", &students[i].studentID);
+                    }
+                }
+            }
+    } else if (searchChoice == 2) {
+
+    // Case-insensitively for last name
+            printf("Enter Last Name: ");
+            scanf("%s", searchstudentlName);
+    
+            for (int i = 0; i < numOfStudents; i++) {
+                // Does a case-insensitive comparison 
+                if (STRCASECMP(students[i].studentlName, searchstudentlName) == 0) {
+                    found = 1;
+                    printf("Student found:\n");
+                    printf("First Name: %s\n", students[i].studentfName);
+                    printf("Last Name: %s\n", students[i].studentlName);
+                    printf("Student ID: %d\n", students[i].studentID);
+                    printf("Aggregate Marks: %d\n", students[i].aggregateMarks);
+                    printf("Grade: %s\n", students[i].Grade);
+
+                    printf("Update students details? 1/0: ");
+                    scanf("%d", &updateChoice);
+
+                    if (updateChoice) {
+                        printf("Enter new First Name: ");
+                        scanf("%s", students[i].studentfName);
+
+                        printf("Enter new Last Name: ");
+                        scanf("%s", students[i].studentlName);
+
+                        printf("Enter new Student ID: ");
+                        scanf("%d", &students[i].studentID);
+                    }
+                }
+            }
+    }
+    else {
+        printf("Invalid choice. Please try again.\n");
+    }
+
+    if (found != 1) {
+        printf("Student not found.\n");
+    }
+}
+
+//Finds and prints top-scoring students & marks Function to find and print top-scoring students
+void topStudents() {
+    int topMarks = 0;
+
+    //Calculates the highest total marks in class 
+    for (int i = 0; i < numOfStudents; i++) {
+        if (students[i].aggregateMarks > topMarks) {
+            topMarks = students[i].aggregateMarks;
+        }
+    }
+    
+    if (topMarks == 0) {
+        printf("No students in the class.\n");
+        return;
+    }
+
+    //Print details of top-scoring students
+    printf("Top-Scoring Students:\n");
+    for (int i = 0; i < numOfStudents; i++) {
+        if (students[i].aggregateMarks == topMarks) {
+            
+            printf("First Name: %s\n", students[i].studentfName);
+            printf("Last Name: %s\n", students[i].studentlName);
+            printf("Student ID: %d\n", students[i].studentID);
+            printf("Aggregate Marks: %d\n", students[i].aggregateMarks);
+            printf("Grade: %s\n", students[i].Grade);
+            printf("\n");
+        }
+    }
+}
+
+int main() {
+    while (true) {
+        int choice;
+        
+        printf("Menu: \n");
+        printf("Enrol: (1)\n");
+        printf("Search & Update: (2)\n");
+        printf("Top Students: (3)\n");
+        printf("Exit: (4)\n");
+        
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        if (choice == 1) {
+            enrol();
+        } else if (choice = 2) {
+            searchUpdate();
+        } else if (choice = 3) {
+            topStudents();
+        } else if (choice = 4) {
+            printf("Exiting....\n");
+        } else {
+            printf("Invalid choice. \n Please choose between 1-4. ");
+        
+    }
+}
+}
