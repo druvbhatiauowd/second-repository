@@ -1,0 +1,84 @@
+#include <stdio.h>
+
+void separateIterative(int arr[], int size) {
+    int oddValues[size], evenValues[size];
+    int oddCount = 0, evenCount = 0;
+
+    //Iterates through even/odd variables and adds them to respective sub-array
+    for (int i = 0; i < size; i++) {
+        if (arr[i] % 2 == 0) {
+            evenValues[evenCount] = arr[i];
+            evenCount++;
+        } else {
+            oddValues[oddCount] = arr[i];
+            oddCount++;
+        }
+    }
+
+    //Copies variables from odd array into main array
+    for (int i = 0; i < oddCount; i++) {
+        arr[i] = oddValues[i];
+    }
+    //Copes variables from even array into main array after odd array
+    for (int i = 0; i < evenCount; i++) {
+        arr[oddCount + i] = evenValues[i];
+    }
+    
+    //Prints the array after iterating
+    printf("Array after iterating.\n");
+    for (int i = 0; i < size; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+}
+
+
+//Function to swap the pointers to swap the variables
+void swap(int *a, int *b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+void separateRecursive(int arr[], int start, int end, int size) {
+    // Base case: If the subarray size is 0 or 1, no further action is needed
+    if (start >= end) {
+        return;
+    }
+    
+    // Recursive case: Swap positions based on the parity of the element at the start index
+    if (arr[start] % 2 == 0) {
+        swap(&arr[start], &arr[end]);
+        separateRecursive(arr, start, end - 1, size);
+    } else {
+        separateRecursive(arr, start + 1, end, size);
+    }
+    
+    // Print the array after the recursive algorithm is complete
+    if (start == 0 && end == size - 1) {
+        printf("Array after recursing.\n");
+        for (int i = 0; i <= end; i++) {
+            printf("%d ", arr[i]);
+        }
+        printf("\n");
+    }
+}
+
+int main() {
+    printf("How big is your array? ");
+    int var;
+    scanf("%d", &var);
+    int arr1[var];
+
+    for (int i = 0; i < var; i++) {
+        int new_var;
+        printf("Input number into array: ");
+        scanf("%d", &new_var);
+        arr1[i] = new_var;
+    }
+
+    separateIterative(arr1, var);
+    separateRecursive(arr1, 0, var - 1, var);
+
+    return 0;
+}
