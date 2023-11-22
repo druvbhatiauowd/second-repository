@@ -5,6 +5,7 @@ using namespace std;
 
 
 void print_real( float number, int fieldspace, int precision);
+
 template <typename T>
 void update_scale(T& m1, T& m2, T m3 = 10);
 
@@ -39,3 +40,5 @@ void update_scale(T& m1, T& m2, T m3) {
     m2 = (original_m1 - original_m2) * m3;
 
 }
+
+// The reason the values have changed is because we have ran the values through the update_scale function which modifies the values using the written functions.
